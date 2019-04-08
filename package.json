@@ -1,0 +1,48 @@
+{
+  "name": "string-to-react",
+  "version": "1.0.0",
+  "description": "convert string to react component",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.dev.js --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PorUnaCabeza/string-to-react.git"
+  },
+  "keywords": [
+    "react",
+    "converter",
+    "parser",
+    "html"
+  ],
+  "author": "PorUnaCabeza",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PorUnaCabeza/string-to-react/issues"
+  },
+  "homepage": "https://github.com/PorUnaCabeza/string-to-react#readme",
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/react": "^16.8.13",
+    "@types/react-dom": "^16.8.3",
+    "acorn": "^6.1.1",
+    "acorn-jsx": "^5.0.1",
+    "babel-loader": "^8.0.5",
+    "clean-webpack-plugin": "^2.0.1",
+    "cross-env": "^5.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "prettier": "^1.16.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.4.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-merge": "^4.2.1"
+  }
+}
