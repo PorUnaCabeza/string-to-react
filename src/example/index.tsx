@@ -1,10 +1,10 @@
 import acorn = require('acorn')
 import jsx = require('acorn-jsx')
-import React from 'react'
+import React, { ReactElement } from 'react'
 import ReactDOM from 'react-dom'
 let s = `<div style={{padding: 20, color: 'red'}}>
   <div a="123">123</div>
-  <div></div>
+  <div b={1}></div>
 </div>`
 interface ASTNode {
   start: number
@@ -42,6 +42,7 @@ interface Attribute {
     expression: {
       properties: AttrExpProp[]
       type: string
+      value: string | number
     }
     value: string | number
   }
@@ -62,6 +63,15 @@ interface AttrExpProp {
     value: string | number
   }
 }
+const uuid = function(): string {
+  var d = new Date().getTime()
+  var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = (d + Math.random() * 16) % 16 | 0
+    d = Math.floor(d / 16)
+    return (c == 'x' ? r : (r & 0x7) | 0x8).toString(16)
+  })
+  return uuid
+}
 let a = acorn.Parser.extend(jsx()).parse(s) as any
 let expression = a.body[0].expression as ASTNode
 console.log(expression)
@@ -76,21 +86,36 @@ const buildAttr = function(tag: OpenTag) {
         result[attr.name.name] = exp.properties.reduce((a, b) => {
           return Object.assign(a, { [b.key.name]: b.value.value })
         }, {})
+      } else if (exp.type === 'Literal') {
+        result[attr.name.name] = exp.value
       }
     } else if (attr.value.type === 'Literal') {
+      result[attr.name.name] = attr.value.value
     }
   })
+  return result
 }
 
-const buildElement = function(expression: ASTNode) {
-  if (expression.type === 'JSXElement') {
-    console.log(expression.openingElement.name.name)
-    console.log(buildAttr(expression.openingElement))
-  } else if (expression.type === 'JSXText') {
-    console.log(expression.openingElement.name.name)
+const buildElement = function(nodeList: ASTNode[]): ReactElement[] {
+  let result = []
+  for (let i = 0; i < nodeList.length; i++) {
+    let node = nodeList[i]
+    if (node.type === 'JSXElement') {
+      let ele = React.createElement(
+        node.openingElement.name.name,
+        Object.assign({ key: uuid() }, buildAttr(node.openingElement)),
+        buildElement(node.children || [])
+      )
+      result.push(ele)
+    } else if (node.type === 'JSXText') {
+      if (!node.value) continue
+      if (node.value.replace(/(\s|\n)/g, '').length === 0) continue
+      result.push(node.value)
+    }
   }
+  return result as ReactElement[]
 }
 
-buildElement(expression)
+let r = buildElement([expression])
 
-ReactDOM.render(<div>123</div>, document.getElementById('container'))
+ReactDOM.render(r, document.getElementById('container'))
