@@ -1,42 +1,34 @@
-import { ReactElement } from 'react'
+import { ComponentClass, FunctionComponent, ReactElement } from 'react'
 import React from 'react'
 import acorn = require('acorn')
 import jsx = require('acorn-jsx')
-import IdWorker from './utils/IdWorker'
-import { ASTNode, OpenTag } from './type'
+import idWorker from './utils/idWorker'
+import attr from './attr/attr'
+import { ASTNode } from './type'
 
 const acornParser = acorn.Parser.extend(jsx())
 
-const buildAttr = function(tag: OpenTag) {
-  if (tag.attributes.length < 1) return null
-  let result = {} as any
-  tag.attributes.forEach(attr => {
-    let name = attr.name.name
-    if (attr.value.type === 'JSXExpressionContainer') {
-      let exp = attr.value.expression
-      if (exp.type === 'ObjectExpression') {
-        result[name] = exp.properties.reduce((a, b) => {
-          return Object.assign(a, { [b.key.name]: b.value.value })
-        }, {})
-      } else if (exp.type === 'Literal') {
-        result[name] = exp.value
-      }
-    } else if (attr.value.type === 'Literal') {
-      result[name] = attr.value.value
-    }
-  })
-  return result
+type ElementType = FunctionComponent | ComponentClass | string | null
+export interface Transform {
+  (tagName: string): ElementType
 }
 
-const buildElement = function(nodeList: ASTNode[]): ReactElement[] {
+const buildElement = function(nodeList: ASTNode[], transform?: Transform): ReactElement[] {
   let result = []
   for (let i = 0; i < nodeList.length; i++) {
     let node = nodeList[i]
     if (node.type === 'JSXElement') {
+      let type: ElementType = node.openingElement.name.name
+      if (transform) {
+        let transformedType = transform(type)
+        if (!!transformedType) {
+          type = transformedType
+        }
+      }
       let ele = React.createElement(
-        node.openingElement.name.name,
-        Object.assign({ key: IdWorker.next() }, buildAttr(node.openingElement)),
-        buildElement(node.children || [])
+        type,
+        { key: idWorker.next(), ...attr.generateProps(node.openingElement) },
+        buildElement(node.children || [], transform)
       )
       result.push(ele)
     } else if (node.type === 'JSXText') {
@@ -48,8 +40,8 @@ const buildElement = function(nodeList: ASTNode[]): ReactElement[] {
   return result as ReactElement[]
 }
 
-export default function(s: string) {
+export default function(s: string, transform?: Transform) {
   let astTree = acornParser.parse(s) as any
   let expression = astTree.body[0].expression as ASTNode
-  return buildElement([expression])
+  return buildElement([expression], transform)
 }

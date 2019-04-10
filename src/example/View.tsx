@@ -1,5 +1,5 @@
 import React from 'react'
 import { FunctionComponent } from 'react'
 
-const View: FunctionComponent = props => <div {...props}>{props.children}</div>
+const View: FunctionComponent = props => <text {...props}>{props.children}</text>
 export default View
