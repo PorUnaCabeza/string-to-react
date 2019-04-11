@@ -1,6 +1,6 @@
 {
   "name": "string-to-react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "convert string to react component",
   "main": "index.js",
   "scripts": {

@@ -1,12 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import StringToReact from '../src/parser/parser'
-
-class View extends React.Component {
-  render() {
-    return <div {...this.props}>{this.props.children}</div>
-  }
-}
+import View from './View'
 
 let s = `<div>
           <div>hi</div>
