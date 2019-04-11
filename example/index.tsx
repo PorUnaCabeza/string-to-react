@@ -20,7 +20,7 @@ let s = `<View
             <span style={{ width: 165, fontSize: 14 }}>7件</span>
           </View>
           <View style={{ width: 660 }}>
-            <span style={{ width: 170, fontSize: 14 }}>SS1903060011002</span>
+            <span style="font-size: 12px;color: red;">SS1903060011002</span>
           </View>
         </View>
       </View>`
