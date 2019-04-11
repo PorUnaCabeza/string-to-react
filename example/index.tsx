@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom'
-import parser, { Transform } from '../parser'
+import parser, { Transform } from '../src/parser/parser'
 import View from './View'
 let s = `<View
         style={{
@@ -10,6 +10,7 @@ let s = `<View
           alignItems: 'center',
           justifyContent: 'center'
         }}
+        test={123}
       >
         <View style={{flexDirection: 'column'}}>
           <View style={{ width: 660, justifyContent: 'space-between' }}>

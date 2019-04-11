@@ -1,4 +1,4 @@
-import { Attribute, OpenTag } from '../type'
+import { Attribute, OpenTag } from '../parser/parser'
 
 interface Props {
   [key: string]: string | number | Props
@@ -25,12 +25,9 @@ const generateFromExpression = function(attr: Attribute): Props {
   let name = attr.name.name
   let exp = attr.value.expression
   if (exp.type === 'ObjectExpression') {
-    result[name] = exp.properties.reduce(
-      (a, b) => {
-        return { ...a, [b.key.name]: b.value.value }
-      },
-      { a: 1 }
-    )
+    result[name] = exp.properties.reduce((a, b) => {
+      return { ...a, [b.key.name]: b.value.value }
+    }, {})
   } else if (exp.type === 'Literal') {
     result[name] = exp.value
   }

@@ -2,13 +2,70 @@ import { ComponentClass, FunctionComponent, ReactElement } from 'react'
 import React from 'react'
 import acorn = require('acorn')
 import jsx = require('acorn-jsx')
-import idWorker from './utils/idWorker'
-import attr from './attr/attr'
-import { ASTNode } from './type'
+import idWorker from '../utils/idWorker'
+import attr from '../attr/attr'
 
 const acornParser = acorn.Parser.extend(jsx())
 
 type ElementType = FunctionComponent | ComponentClass | string | null
+export interface ASTNode {
+  start: number
+  end: number
+  type: string
+  children?: ASTNode[]
+  value?: string
+  openingElement: OpenTag
+  closingElement: any
+}
+export interface OpenTag {
+  start: number
+  end: number
+  type: string
+  attributes: Attribute[]
+  selfClosing: boolean
+  name: {
+    name: string
+  }
+}
+export interface Attribute {
+  start: number
+  end: number
+  type: string
+  name: {
+    start: number
+    end: number
+    name: string
+    type: string
+  }
+  value: {
+    start: number
+    end: number
+    type: string
+    expression: {
+      properties: AttrExpProp[]
+      type: string
+      value: string | number
+    }
+    value: string | number
+  }
+}
+
+export interface AttrExpProp {
+  key: {
+    start: number
+    end: number
+    name: string
+    type: string
+  }
+  value: {
+    start: number
+    end: number
+    raw: string
+    type: string
+    value: string | number
+  }
+}
+
 export interface Transform {
   (tagName: string): ElementType
 }
@@ -21,9 +78,7 @@ const buildElement = function(nodeList: ASTNode[], transform?: Transform): React
       let type: ElementType = node.openingElement.name.name
       if (transform) {
         let transformedType = transform(type)
-        if (!!transformedType) {
-          type = transformedType
-        }
+        type = transformedType ? transformedType : type
       }
       let ele = React.createElement(
         type,
@@ -40,8 +95,8 @@ const buildElement = function(nodeList: ASTNode[], transform?: Transform): React
   return result as ReactElement[]
 }
 
-export default function(s: string, transform?: Transform) {
+export default function(s: string, transform?: Transform): ReactElement {
   let astTree = acornParser.parse(s) as any
   let expression = astTree.body[0].expression as ASTNode
-  return buildElement([expression], transform)
+  return buildElement([expression], transform)[0]
 }

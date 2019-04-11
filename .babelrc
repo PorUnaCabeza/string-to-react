@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": ["last 2 versions", "ie >= 9"]
+        },
+        "loose": true,
+        "useBuiltIns": "usage"
+      }
+    ],
+    "@babel/preset-typescript"
+  ]
+}

@@ -9,7 +9,7 @@ function resolve(dir) {
 
 module.exports = merge(baseWebpackConfig, {
   mode: 'development',
-  entry: './src/example/index.tsx',
+  entry: './example/index.tsx',
   output: {
     filename: 'bundle.[hash].js',
     path: __dirname + '/dist'
@@ -27,7 +27,7 @@ module.exports = merge(baseWebpackConfig, {
       }
     ]
   },
-  plugins: [new HtmlWebpackPlugin({ template: './index.html' })],
+  plugins: [new HtmlWebpackPlugin({ template: './example/index.html' })],
   devServer: {
     contentBase: './dist'
   }
