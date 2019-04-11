@@ -11,7 +11,10 @@ module.exports = merge(baseWebpackConfig, {
     filename: isDev ? 'string-to-react.js' : 'string-to-react.min.js',
     path: path.resolve(__dirname, '../dist'),
     library: 'StringToReact',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    libraryExport: 'default',
+    globalObject: 'this',
+    umdNamedDefine: true
   },
   devtool: isDev ? 'source-map' : false,
   optimization: {

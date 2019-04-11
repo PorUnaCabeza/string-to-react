@@ -87,8 +87,7 @@ const buildElement = function(nodeList: ASTNode[], transform?: Transform): React
       )
       result.push(ele)
     } else if (node.type === 'JSXText') {
-      if (!node.value) continue
-      if (node.value.replace(/(\s|\n)/g, '').length === 0) continue
+      if (node.value && node.value.replace(/(\s|\n)/g, '').length === 0) continue
       result.push(node.value)
     }
   }
@@ -97,6 +96,7 @@ const buildElement = function(nodeList: ASTNode[], transform?: Transform): React
 
 export default function(s: string, transform?: Transform): ReactElement {
   let astTree = acornParser.parse(s) as any
+  console.log(astTree)
   let expression = astTree.body[0].expression as ASTNode
   return buildElement([expression], transform)[0]
 }

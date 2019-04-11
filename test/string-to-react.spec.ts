@@ -21,6 +21,16 @@ describe('string-to-react[Base]', () => {
     expect(reactString).toBe(s)
   })
 
+  test('test wrap string', () => {
+    let s = `<div>
+              <span>we choose to go to the moon in this decade<div>123</div></span>
+             </div>`
+    let result = '<div><span>we choose to go to the moon in this decade<div>123</div></span></div>'
+    let reactElement = parser(s)
+    let reactString = ReactDOMServer.renderToStaticMarkup(reactElement)
+    expect(reactString).toBe(result)
+  })
+
   test('test simple props', () => {
     let s = `<div a="false"><span b="t">not because they are easy</span></div>`
     let reactElement = parser(s)
